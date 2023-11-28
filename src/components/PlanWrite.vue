@@ -1,9 +1,10 @@
 <script setup>
 
-import {reactive, ref, watch} from "vue";
+import {onMounted, ref, watch, reactive, computed, watchEffect} from "vue";
 import router from "@/router";
+import axios from "axios";
 
-const showDatePicker = ref(false);
+/*const showDatePicker = ref(false);*/
 const showDatePicker2 = ref(false);
 
 const categoryModalOpen = ref(false);
@@ -16,7 +17,7 @@ const modalOpen = ref(false);
 
 
 
-const repeatData = ref({
+/*const repeatData = ref({
   repeatCycle: "",
   monday: false,
   tuesday: false,
@@ -36,43 +37,83 @@ const repeatData = ref({
   },
   repeatMonth: 1,
   End: false,
-});
+});*/
 
 
 const returnHome = () => {
   router.push("/");
 };
+const plan = reactive({
+  data: {
+    StartTime: '',
+    endTime: '',
+  },
+});
 
-/*const Sdate = reactive({
-  startDate : '',
-  startTime : '',
-});*/
-/*const Edate = reactive({
-  endDate : '',
-  endTime : '',
-})*/
+const Sdate = reactive({
+  startDate: '',
+  startTime: '',
 
-/*const register = () => {y
-  const combinedStartDateTime = `${Sdate.startDate} ${Sdate.startTime}`;
-  const combinedEndDateTime = `${Edate.endDate} ${Edate.endTime}`;
-  const plan = {
-    combinedStartDateTime: combinedStartDateTime,
-    combinedEndDateTime: combinedEndDateTime,
-  };
+});
+
+const Edate = reactive({
+  endDate: '',
+  endTime: '',
+});
+
+const combinedStartDateTime = computed(() => {
+  return `${Sdate.startDate} ${Sdate.startTime}`;
+});
+
+const combinedEndDateTime = computed(() => {
+  return `${Edate.endDate} ${Edate.endTime}`;
+});
+
+watchEffect(() => {
+  // 변경된 값이 있을 때만 업데이트
+  if (combinedStartDateTime.value && combinedEndDateTime.value) {
+    plan.data.StartTime = combinedStartDateTime.value;
+    plan.data.endTime = combinedEndDateTime.value;
+  }
+});
+const categoryData = reactive({
+  data: {
+    uid: "user",
+    cateName: "",
+  },
+})
+
+const createCategory = () => {
+  console.log(categoryData);
+  axios
+    .post("http://localhost:8080/InsertCategory", categoryData.data)
+    .then((response) => {
+        console.log(response);
+        alert("카테고리 등록완료");
+        window.location.reload();
+      })
+    .catch((err) => {
+        console.log(err);
+      });
+}
+const register = () => {
   console.log(plan);
   axios
-    .post("http://localhost:8080/Ch10/user1", plan)
+    .post("http://localhost:8080/PlanWrite", plan.data) // plan.data를 전송
     .then((response) => {
       console.log(response);
-      alert("등록!");
+      alert("일정 등록완료!");
+
+      router.push("/");
+
     })
     .catch((err) => {
       console.log(err);
     });
-};*/
-const handleSubmit = () => {
+};
+/*const handleSubmit = () => {
   console.log("폼 데이터:", repeatData.value);
-  /*console.log(user);
+  console.log(user);
   axios
     .post("http://localhost:8080/Ch10/user1", user)
     .then((response) => {
@@ -81,14 +122,14 @@ const handleSubmit = () => {
     })
     .catch((err) => {
       console.log(err);
-    });*/
+    });
 
-};
-const handleWeekdayCheckboxChange = (day) => {
+};*/
+/*const handleWeekdayCheckboxChange = (day) => {
   // 체크박스가 변경될 때 호출되는 메서드
   // 선택된 요일을 1로 설정, 선택 해제되면 0으로 설정
   repeatData.value["insertData"][day] = !repeatData.value[day] ? 0 : 1;
-};
+};*/
 
 
 const category = () => {
@@ -97,8 +138,23 @@ const category = () => {
 const closeCategoryModal = () => {
   categoryModalOpen.value = false;
 }
+
+const categories = ref([]);
+
+const CategoryList = async () => {
+  try{
+    const response = await axios.get("http://localhost:8080/PlanWrite");
+    console.log(response.data);
+    return categories.value = response.data;
+
+
+  }catch (error) {
+    console.log(error);
+  }
+}
+/*
 const createCategory = () => {
-  /*console.log(user);
+  console.log(user);
   axios
     .post("http://localhost:8080/Ch10/user1", category)
     .then((response) => {
@@ -107,9 +163,9 @@ const createCategory = () => {
     })
     .catch((err) => {
       console.log(err);
-    });*/
+    });
 
-};
+};*/
 
 watch(isChecked, (value) => {
   if (value) {
@@ -130,7 +186,7 @@ const closeModal = () => {
   modalOpen.value = false;
 };
 
-const cancel = () => {
+/*const cancel = () => {
   modalOpen.value = false;
   isChecked.value = false;
 };
@@ -138,7 +194,7 @@ const cancel = () => {
 
 const daySelect = () => {
   showDatePicker.value = true;
-};
+};*/
 
 const BallOn = () => {
   showDatePicker2.value = true;
@@ -146,9 +202,9 @@ const BallOn = () => {
 const BallOff = ()=> {
   showDatePicker2.value = false;
 };
-const dayNone = () => {
+/*const dayNone = () => {
   showDatePicker.value = false;
-};
+};*/
 
 
 /*//친구리스트 정의
@@ -176,6 +232,7 @@ const addSelectedFriend = () => {
   }
 };*/
 
+onMounted(CategoryList);
 </script>
 
 <template>
@@ -186,19 +243,20 @@ const addSelectedFriend = () => {
           <p style="margin-top: 25%; font-size: 25px;  font-weight: bold; letter-spacing: -2px;"  >일정 입력하기</p>
           <p class="smallTitle">제목</p>
           <form @:submit.prevent="register">
-          <input v-model="title" type="text" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 100%; border-radius: 5px; padding: 8px; " placeholder="일정 제목 입력...">
+<!--          <input v-model="plan.data.uid" type="text">-->
+          <input v-model="plan.data.title" type="text" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 100%; border-radius: 5px; padding: 8px; " placeholder="일정 제목 입력...">
           <p class="smallTitle" >카테고리</p>
-          <select style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 25%; border-radius: 5px; padding: 8px;">
-            <option>회사</option>
-            <option>친구</option>
-          </select>
+            <select v-model="plan.data.cateNo" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey; width: 25%; border-radius: 5px; padding: 8px;">
+              <option v-for="category in categories" :key="category.id" :value="category.cateNo">{{category.cateName}}</option>
+            </select>
             <v-btn @click="category" style="margin-left: 15px" class="plusFri" density="compact" icon="mdi-plus"></v-btn>
             <v-dialog v-model="categoryModalOpen" max-width="300px">
               <v-card>
                 <form @submit.prevent="createCategory">
                   <v-card-title>카테고리 생성</v-card-title>
                   <v-card-text>
-                    <input v-model="cateName" type="text" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 100%; border-radius: 5px; padding: 8px; " placeholder="카테고리 이름 입력...">
+                    <input v-model="categoryData.data.uid" type="hidden">
+                    <input v-model="categoryData.data.cateName" type="text" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 100%; border-radius: 5px; padding: 8px; " placeholder="카테고리 이름 입력...">
                   </v-card-text>
                   <v-card-actions>
                     <input style=" background: #2185d0; border-radius: 8px; padding: 10px;   color: white;  float:left;" type="submit" value="등록">
@@ -209,12 +267,12 @@ const addSelectedFriend = () => {
             </v-dialog>
           <p class="smallTitle">일시</p>
           <div>
-            <input v-model="startDate" class="inputStyle" type="date" name="start"/>
-            <input v-model="startTime" class="inputStyle" type="time" name="start"/>
+            <input v-model="Sdate.startDate" class="inputStyle" type="date" name="start"/>
+            <input v-model="Sdate.startTime" class="inputStyle" type="time" name="start"/>
             <span style="font-weight: bold; font-size: 20px">~</span>
-            <input v-model="endDate" class="inputLeftStyle" type="date" name="end"/>
-            <input v-model="endTime" class="inputLeftStyle" type="time" name="end"/>
-            <v-checkbox style="float: right; margin-top: 10px" v-model="isChecked" label="반복"></v-checkbox>
+            <input v-model="Edate.endDate" class="inputLeftStyle" type="date" name="end"/>
+            <input v-model="Edate.endTime" class="inputLeftStyle" type="time" name="end"/>
+<!--            <v-checkbox style="float: right; margin-top: 10px" v-model="isChecked" label="반복"></v-checkbox>
             <v-dialog v-model="modalOpen" max-width="350px">
               <v-card>
                 <form @:submit.prevent="handleSubmit">
@@ -265,40 +323,40 @@ const addSelectedFriend = () => {
                   </v-card-actions>
                   </form>
                 </v-card>
-              </v-dialog>
-              <p class="smallTitle">참석자</p>
+              </v-dialog>-->
+<!--              <p class="smallTitle">참석자</p>
               <div>
                 <select v-model="selectedFriend" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 25%; border-radius: 5px; padding: 8px;">
                   <option v-for="friend in friends" :key="friend.nick" :value="friend.nick">{{ friend.nick }}</option>
                 </select>
                 <span v-for="addedFriend in addedFriends" :key="addedFriend.nick">{{ addedFriend.nick }}</span>
                     <v-btn @click="addSelectedFriend" style="margin-left: 15px" class="plusFri" density="compact" icon="mdi-plus"></v-btn>
-              </div>
+              </div>-->
               <div>
                 <p class="smallTitle">메모</p>
-                <textarea style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 100%; border-radius: 5px; padding: 8px;"></textarea>
+                <textarea v-model="plan.data.memo" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 100%; border-radius: 5px; padding: 8px;"></textarea>
               </div>
               <div style="margin-top: 2%">
                 <span class="smallTitleMargin">공개여부</span>
-                <input value="0" v-model="isPublic" type="radio" id="All" name="group2"/>
+                <input value="0" v-model="plan.data.isPublic" type="radio" id="All" name="group2"/>
                 <label for="All" style="margin-right: 4%;">전체공개</label>
-                <input value="1" v-model="isPublic" type="radio" id="FrAll" name="group2"/>
+                <input value="1" v-model="plan.data.isPublic" type="radio" id="FrAll" name="group2"/>
                 <label for="FrAll" style="margin-right: 4%;" >친구 전체공개</label>
-                <input value="2" v-model="isPublic" type="radio" id="onlyDay" name="group2"/>
+                <input value="2" v-model="plan.data.isPublic" type="radio" id="onlyDay" name="group2"/>
                 <label for="onlyDay">일자만 공개(내용,참석자 비공개)</label>
               </div>
               <div style="margin-top: 2%">
                 <span class="smallTitleMargin">알람여부</span>
-                <input value="0" v-model="isNotification" type="radio" @click="BallOn" id="BallOn" name="group3"/>
+                <input value="0" v-model="plan.data.isNotification" type="radio" @click="BallOn" id="BallOn" name="group3"/>
                 <label for="BallOn" style="margin-right: 4%;">알림</label>
-                <input value="1" v-model="isNotification" type="radio" id="BallOff" name="group3"/>
+                <input value="1" v-model="plan.data.isNotification" type="radio" id="BallOff" name="group3"/>
                 <label for="BallOff" @click="BallOff" style="margin-right: 4%;" >알림X</label>
 
               </div>
             <input v-if="showDatePicker2" style="margin-top: 1.5%; margin-left: 70px; background: white; border: solid 1px darkgrey; border-radius: 5px; padding: 8px;" type="date" name="BallDateEnd" v-model="Null" />
             </div>
             <v-btn @click="returnHome" style="background: lightgray; border-radius: 8px; padding: 10px; width: 13%; font-weight: bold; height: 42px; margin-top:5%; margin-left: 3%; float:right;" >돌아가기</v-btn>
-            <input style=" background: #2185d0; border-radius: 8px; padding: 10px; width: 13%;  color: white; margin-top: 5%; float:right;" type="submit" value="일정 등록">
+            <input style=" background: #2185d0; border-radius: 8px; padding: 10px; width: 18%;  color: white; margin-top: 5%; float:right;" type="submit" value="일정 등록">
           </form>
         </v-col>
       </v-row>

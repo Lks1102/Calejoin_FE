@@ -1,8 +1,3 @@
-<script setup>
-import Sidebar from "@/components/SideBare.vue";
-import EventCalendar from "@/components/EventCalendar.vue";
-import Profile from "@/components/Profile.vue";
-</script>
 
 <template>
   <v-app :style="{ background: $vuetify.theme.themes.light.colors.primary }">
@@ -28,6 +23,7 @@ import Profile from "@/components/Profile.vue";
 export default {
   date: () => ({}),
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     Sidebar,
     EventCalendar,
     Profile,
