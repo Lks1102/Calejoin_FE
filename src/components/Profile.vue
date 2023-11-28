@@ -5,7 +5,9 @@ import { mdiTag } from "@mdi/js";
 import { mdiFormatListChecks } from "@mdi/js";
 import { mdiPin } from "@mdi/js";
 import { mdiPencilPlus } from "@mdi/js";
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
+import axios from 'axios';
+
 
 const mdiFolderOpenPath = mdiFolderOpen;
 const mdiTagPath = mdiTag;
@@ -25,6 +27,21 @@ const toggleCard = () => {
 const toggleCard2 = () => {
   showCardContents2.value = !showCardContents2.value; // 카드 내용 토글
 };
+/*const uid = ref("");*/
+const plans = ref([]);
+const categories = ref([]);
+const homedata = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/');
+    plans.value = response.data.plans;
+    categories.value = response.data.categories;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+onMounted(homedata);
+
 </script>
 <template>
   <div>
@@ -46,23 +63,11 @@ const toggleCard2 = () => {
   <v-card v-if="showCardContents">
     <v-card-title></v-card-title>
     <v-card-text>
-      <v-sheet height="130" :class="['custom-scroll', 'overflow-y-auto']">
-      <div style="font-size: 18px; padding: 2px">
-        <svg-icon type="mdi" :path="mdiTagPath" style="color: grey"></svg-icon>
-        [전체보기]
-      </div>
-      <div style="font-size: 17px; padding: 2px">
-        <svg-icon type="mdi" :path="mdiTagPath" style="color: grey"></svg-icon>
-        회사
-      </div>
-      <div style="font-size: 17px; padding: 2px">
-        <svg-icon type="mdi" :path="mdiTagPath" style="color: grey"></svg-icon>
-        개인공부
-      </div>
-      <div style="font-size: 17px; padding: 2px">
-        <svg-icon type="mdi" :path="mdiTagPath" style="color: grey"></svg-icon>
-        약속
-      </div>
+      <v-sheet  height="auto" max-height="150" :class="['custom-scroll', 'overflow-y-auto']" >
+        <div v-for="category in categories" :key="category.id" style="font-size: 17px; padding: 2px">
+          <svg-icon type="mdi" :path="mdiTagPath" style="color: grey"></svg-icon>
+          No:{{category.cateNo}} {{category.cateName}}
+        </div>
       </v-sheet>
     </v-card-text>
   </v-card>
@@ -75,40 +80,17 @@ const toggleCard2 = () => {
       :path="mdiFormatListChecksPath"
       style="color: grey"
     ></svg-icon>
-    다가오는 일정
+    나의 일정 보기
   </div>
   <v-card v-if="showCardContents2">
     <v-card-title></v-card-title>
     <v-card-text>
-      <v-sheet :class="['custom-scroll', 'overflow-y-auto']"  height="150">
-      <div style="font-size: 17px; padding: 2px">
+      <v-sheet :class="['custom-scroll', 'overflow-y-auto']" height="auto" max-height="150">
+      <div v-for="plan in plans" :key="plan.id" style="font-size: 17px; padding: 2px">
         <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-        일정내용
+          {{plan.title}} : {{plan.memo}}
       </div>
-      <div style="font-size: 17px; padding: 2px">
-        <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-        일정내용
-      </div>
-      <div style="font-size: 17px; padding: 2px">
-        <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-        일정내용
-      </div>
-        <div style="font-size: 17px; padding: 2px">
-          <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-          일정내용
-        </div>
-        <div style="font-size: 17px; padding: 2px">
-          <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-          일정내용
-        </div>
-        <div style="font-size: 17px; padding: 2px">
-          <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-          일정내용
-        </div>
-        <div style="font-size: 17px; padding: 2px">
-          <svg-icon type="mdi" :path="mdiPinPath" style="color: grey"></svg-icon>
-          일정내용
-        </div>
+
 
       </v-sheet>
     </v-card-text>
