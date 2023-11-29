@@ -24,6 +24,25 @@ function getImageUrl() {
 const bgImg = getImageUrl();
 </script>
 <style scoped>
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+ul,li,ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: #111;
+}
+input,
+textarea {
+  outline: none;
+}
+
 @media (max-width: 768px) {
 
   #loginForm{
@@ -98,6 +117,42 @@ const bgImg = getImageUrl();
   line-height: 120px;
 }
 
+li#kkLoginBtn a {
+  display:block;
+  height:56px;
+  padding-left:35px;
+  background:#ffe812 url("../../assets/ic-kakao-02.png") no-repeat 120px 21px;
+  background-size:18px 17px;
+  color:#262626;
+  box-sizing:border-box;
+  font-size:16px;
+  line-height:56px;
+  text-align:center;
+}
+
+li#kkLoginBtn a img {
+  display:inline-block;
+  margin-right:3px;
+  margin-left:-20px;
+  margin-bottom:2px;
+}
+
+li#kkLoginBtn .kkLogin {
+  display:block;
+  height:56px;
+  padding-left:35px;
+  background:#ffe812 url("../../assets/ic-kakao-02.png") no-repeat 120px 19px;
+  background-size:18px 17px;
+  color:#262626;
+  box-sizing:border-box;
+  font-size:16px;
+  line-height:56px;
+  text-align:center;
+}
+
+.w100p {
+  width: 100% !important;
+}
 
 </style>
 
