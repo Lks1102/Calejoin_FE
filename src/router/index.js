@@ -88,6 +88,12 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "home" */ "@/components/PlanWrite.vue"),
       },
+      {
+        path: "Calendar/:calendarId",
+        name: "Calendar",
+        props: true,
+        component: () => import("@/components/FriendCalendar/Calendar.vue"),
+      },
     ],
   },
 ];

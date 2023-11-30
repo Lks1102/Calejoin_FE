@@ -45,8 +45,10 @@ const returnHome = () => {
 };
 const plan = reactive({
   data: {
+    uid: "user",
     StartTime: '',
     endTime: '',
+    isPublic: '',
   },
 });
 
@@ -78,15 +80,15 @@ watchEffect(() => {
 });
 const categoryData = reactive({
   data: {
-    uid: "user",
+
     cateName: "",
   },
 })
-
+const uid="user";
 const createCategory = () => {
   console.log(categoryData);
   axios
-    .post("http://localhost:8080/InsertCategory", categoryData.data)
+    .post(`http://localhost:8080/InsertCategory/${uid}`, categoryData.data)
     .then((response) => {
         console.log(response);
         alert("카테고리 등록완료");
@@ -143,7 +145,7 @@ const categories = ref([]);
 
 const CategoryList = async () => {
   try{
-    const response = await axios.get("http://localhost:8080/PlanWrite");
+    const response = await axios.get(`http://localhost:8080/PlanWrite/${uid}`);
     console.log(response.data);
     return categories.value = response.data;
 
@@ -339,11 +341,11 @@ onMounted(CategoryList);
               <div style="margin-top: 2%">
                 <span class="smallTitleMargin">공개여부</span>
                 <input value="0" v-model="plan.data.isPublic" type="radio" id="All" name="group2"/>
-                <label for="All" style="margin-right: 4%;">전체공개</label>
+                <label for="All" style="margin-right: 4%;">공개</label>
                 <input value="1" v-model="plan.data.isPublic" type="radio" id="FrAll" name="group2"/>
                 <label for="FrAll" style="margin-right: 4%;" >친구 전체공개</label>
                 <input value="2" v-model="plan.data.isPublic" type="radio" id="onlyDay" name="group2"/>
-                <label for="onlyDay">일자만 공개(내용,참석자 비공개)</label>
+                <label for="onlyDay">비공개</label>
               </div>
               <div style="margin-top: 2%">
                 <span class="smallTitleMargin">알람여부</span>

@@ -16,19 +16,10 @@
   </v-app>
 </template>
 
-<script>
-import Sidebar from "@/components/SideBare.vue";
-import EventCalendar from "@/components/EventCalendar.vue";
+<script setup>
+
 import Profile from "@/components/Profile.vue";
-export default {
-  date: () => ({}),
-  components: {
-    // eslint-disable-next-line vue/no-unused-components
-    Sidebar,
-    EventCalendar,
-    Profile,
-  },
-};
+import EventCalendar from "@/components/EventCalendar.vue";
 </script>
 
 <style scoped></style>
