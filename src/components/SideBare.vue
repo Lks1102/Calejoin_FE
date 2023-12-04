@@ -27,8 +27,13 @@
       <v-list-item router-link to="/dm" class="mb-5">
           <v-icon size="30">mdi-email</v-icon>
       </v-list-item>
-      <v-list-item router-link to="/bell" class="mb-5">
-          <v-icon size="30">mdi-bell</v-icon>
+      <v-list-item router-link to="/PlanWrite" class="mb-5">
+        <svg-icon
+          type="mdi"
+          :path="mdiCalendarEdit"
+          width="30"
+          height="30"
+        ></svg-icon>
       </v-list-item>
       <v-list-item router-link to="/plan" class="mb-5">
           <svg-icon
@@ -69,6 +74,7 @@
 <script>
 import { ref, defineEmits } from "vue";
 import SvgIcon from "@jamescoyle/vue-icon";
+import { mdiCalendarEdit } from '@mdi/js';
 import { mdiBulletinBoard } from "@mdi/js";
 import { mdiTextBoxMultiple } from "@mdi/js";
 import { mdiLightbulb } from '@mdi/js';
@@ -108,6 +114,7 @@ export default {
             openModal,
             closeModal,
             isModalOpen,
+          mdiCalendarEdit,
 
         };
 

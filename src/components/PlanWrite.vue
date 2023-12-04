@@ -4,7 +4,7 @@ import {onMounted, ref, watch, reactive, computed, watchEffect} from "vue";
 import router from "@/router";
 import axios from "axios";
 
-/*const showDatePicker = ref(false);*/
+const showDatePicker = ref(false);
 const showDatePicker2 = ref(false);
 
 const categoryModalOpen = ref(false);
@@ -17,7 +17,7 @@ const modalOpen = ref(false);
 
 
 
-/*const repeatData = ref({
+const repeatData = ref({
   repeatCycle: "",
   monday: false,
   tuesday: false,
@@ -37,7 +37,7 @@ const modalOpen = ref(false);
   },
   repeatMonth: 1,
   End: false,
-});*/
+});
 
 
 const returnHome = () => {
@@ -154,8 +154,7 @@ const CategoryList = async () => {
     console.log(error);
   }
 }
-/*
-const createCategory = () => {
+/*const createCategory = () => {
   console.log(user);
   axios
     .post("http://localhost:8080/Ch10/user1", category)
@@ -186,7 +185,10 @@ const openModal = () => {
 // 모달 닫기
 const closeModal = () => {
   modalOpen.value = false;
+  isChecked.value = false;
 };
+
+
 
 /*const cancel = () => {
   modalOpen.value = false;
@@ -274,7 +276,7 @@ onMounted(CategoryList);
             <span style="font-weight: bold; font-size: 20px">~</span>
             <input v-model="Edate.endDate" class="inputLeftStyle" type="date" name="end"/>
             <input v-model="Edate.endTime" class="inputLeftStyle" type="time" name="end"/>
-<!--            <v-checkbox style="float: right; margin-top: 10px" v-model="isChecked" label="반복"></v-checkbox>
+            <v-checkbox style="float: right; margin-top: 10px" v-model="isChecked" label="반복"></v-checkbox>
             <v-dialog v-model="modalOpen" max-width="350px">
               <v-card>
                 <form @:submit.prevent="handleSubmit">
@@ -320,12 +322,12 @@ onMounted(CategoryList);
                     </div>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn @click="cancel">취소하기</v-btn>
+                    <v-btn @click="closeModal">취소하기</v-btn>
                     <input @click="closeModal" type="submit" style="margin-left: 190px" value="추가하기">
                   </v-card-actions>
                   </form>
                 </v-card>
-              </v-dialog>-->
+              </v-dialog>
 <!--              <p class="smallTitle">참석자</p>
               <div>
                 <select v-model="selectedFriend" style="background: white; margin-top: 1.3%; border: solid 1px darkgrey ; width: 25%; border-radius: 5px; padding: 8px;">
