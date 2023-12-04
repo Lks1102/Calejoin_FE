@@ -14,7 +14,7 @@ const UserRegister = reactive({
     age: "",
     email: ""
   },
-});
+}); 
 
 const register = () => {
   axios
