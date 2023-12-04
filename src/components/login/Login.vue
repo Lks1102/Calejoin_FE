@@ -4,24 +4,60 @@
 
     </div>
     <div id="loginPg">
+      <form @:submit.prevent="login">
       <div id="loginForm">
         <div class="loginTitle">
           <h4>LOGIN</h4>
         </div>
+        <label> 로그인 </label>
+        <v-text-field v-model="UserLogin.data.uid" />
+        <label> 비밀번호 </label>
+        <v-text-field type="password" v-model="UserLogin.data.pass" />
+        <v-btn style="margin-left: 280px; display: block " rounded="xl" size="x-large" type="submit">로그인</v-btn>
+        <v-btn style="margin-left: 280px; display: block; margin-top: 20px " rounded="xl" size="x-large" type="submit" router-link to="/register">회원 가입</v-btn>
       </div>
+      </form>
     </div>
   </v-main>
 </template>
 
 <script setup>
+import { reactive } from "vue";
+import axios from "axios";
+import router from "@/router";
 
-
+const UserLogin = reactive({
+  data: {
+    uid: "",
+    pass: "",
+  },
+});
 function getImageUrl() {
-  const i= Math.floor(Math.random()*7);
+  const i = Math.floor(Math.random() * 7);
   console.log(i);
-  return new URL('/images/login_bg'+i+'.webp', import.meta.url).href;
+  return new URL("/images/login_bg" + i + ".webp", import.meta.url).href;
 }
 const bgImg = getImageUrl();
+
+const login = () => {
+  axios
+    .post("http://localhost:8080/user/login", UserLogin.data)
+    .then((response) => {
+      console.log("로그인 완료시 리스폰스 거쳐감: ");
+      if (response.data === 1) {
+        console.log("로그인 완료시 리스폰스: " + response.data);
+        alert("로그인 완료");
+        router.push("/");
+      } else {
+        console.log("로그인 실패시 리스폰스: " + response.data);
+        alert("로그인 실패");
+        router.push("/login");
+      }
+    })
+    .catch((err) => {
+      console.log("실패:  " + err);
+    });
+};
 </script>
 <style scoped>
 
@@ -68,14 +104,14 @@ textarea {
     border-radius: 75px;
     //border: 2px solid #fff;
     box-sizing: content-box;
-    width: 450px;
-    height: 450px;
+    width: 900px;
+    height: 550px;
     box-shadow: 0px 5px 5px  rgba(0,0,0,0.2);
   }
 
   .loginTitle{
     border-radius: 75px 75px 0 0;
-    width: 450px;
+    width: 900px;
   }
 }
 
@@ -154,5 +190,14 @@ li#kkLoginBtn .kkLogin {
   width: 100% !important;
 }
 
+
+.v-btn.v-btn--density-default{
+
+  width: 300px;
+}
+.v-btn.v-btn--density-default.content{
+
+  width: 300px;
+}
 </style>
 
