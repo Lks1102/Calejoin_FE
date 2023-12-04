@@ -53,7 +53,7 @@ onMounted(homedata);
   <div>
     <v-switch v-model="toggle" label="Calendar"></v-switch>
   </div>
-  <p class="custom-font">NAME's</p>
+  <p class="custom-font">USER's</p>
   <p class="custom-font" style="color: mediumblue">{{receivedMonth}}</p>
   <div
     style="color: mediumblue; width: 40%; padding: 10px 0"
